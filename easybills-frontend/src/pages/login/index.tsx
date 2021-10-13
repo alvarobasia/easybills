@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Container,
   Input,
@@ -12,6 +11,8 @@ import { BsFillPersonFill, BsFillLockFill } from "react-icons/bs";
 import React from "react";
 import styles from "./styles.module.scss";
 import { NextPage } from "next";
+import Footer from '../../components/Footer';
+import Link from 'next/link'
 
 const Home: NextPage = () => {
   return (
@@ -34,6 +35,7 @@ const Home: NextPage = () => {
             fontSize: "64px",
             color: "red",
             fontWeight: "bold",
+            textShadow:"2px 5px 5px #ddd",
           }}
         >
           gastos
@@ -41,9 +43,10 @@ const Home: NextPage = () => {
         e{" "}
         <span
           style={{
-            color: "#4FFF78",
+            color: "#00BB2D",
             fontSize: "64px",
             fontWeight: "bold",
+            textShadow:"2px 5px 5px #ddd",
           }}
         >
           lucros
@@ -104,7 +107,7 @@ const Home: NextPage = () => {
           <Button
             fontFamily="Lexend Deca"
             width="100%"
-            bg="#4FFF78"
+            bg="#00BB2D"
             color="#fff"
             _hover={{
               backgroundColor: "#13AD37",
@@ -120,24 +123,11 @@ const Home: NextPage = () => {
             fontSize="medium"
             marginTop="5px"
           >
-            Não possui uma conta? Se registre agora!
+            Não possui uma conta? Se <Link href="/register">registre agora!</Link>
           </Text>
         </Container>
       </div>
-      <Box
-        fontFamily="Lexend Deca"
-        position="fixed"
-        bottom="0"
-        display="flex"
-        justifyContent="center"
-        bg="#575757"
-        w="100%"
-        height="35px"
-        p={1}
-        color="white"
-      >
-        Easybills &copy; Desenvolvido com ❤️ por Álvaro Basílio
-      </Box>
+      <Footer />
     </>
   );
 };
