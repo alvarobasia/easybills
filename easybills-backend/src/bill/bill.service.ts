@@ -4,23 +4,13 @@ import { UpdateBillDto } from './dto/update-bill.dto';
 
 @Injectable()
 export class BillService {
-  create(createBillDto: CreateBillDto) {
-    return 'This action adds a new bill';
-  }
+  create(createBillDto: CreateBillDto) {}
 
-  findAll() {
-    return `This action returns all bill`;
-  }
+  findAll() {}
 
-  findOne(id: number) {
-    return `This action returns a #${id} bill`;
-  }
+  findOne(id: number) {}
 
-  update(id: number, updateBillDto: UpdateBillDto) {
-    return `This action updates a #${id} bill`;
-  }
+  update(id: number, updateBillDto: UpdateBillDto) {}
 
-  remove(id: number) {
-    return `This action removes a #${id} bill`;
-  }
+  remove(id: number) {}
 }
