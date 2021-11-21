@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export type UserDocument = Bill & Document;
+export type BillDocument = Bill & Document;
 
 @Schema({
   timestamps: true,
@@ -21,6 +21,12 @@ export class Bill {
 
   @Prop({ default: new Date() })
   date: Date;
+
+  @Prop()
+  profit: boolean;
+
+  @Prop()
+  userId: string;
 }
 
-export const UserSchema = SchemaFactory.createForClass(Bill);
+export const BillSchema = SchemaFactory.createForClass(Bill);

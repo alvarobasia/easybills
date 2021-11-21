@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { BillService } from './bill.service';
 import { CreateBillDto } from './dto/create-bill.dto';
 import { UpdateBillDto } from './dto/update-bill.dto';
@@ -8,27 +18,26 @@ export class BillController {
   constructor(private readonly billService: BillService) {}
 
   @Post()
-  create(@Body() createBillDto: CreateBillDto) {
-    return this.billService.create(createBillDto);
+  @UseGuards(JwtAuthGuard)
+  async create(@Body() createBillDto: CreateBillDto) {
+    return await this.billService.create(createBillDto);
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   findAll() {
-    return this.billService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.billService.findOne(+id);
+    return this.billService.findAllByUser();
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBillDto: UpdateBillDto) {
-    return this.billService.update(+id, updateBillDto);
+  @UseGuards(JwtAuthGuard)
+  async update(@Param('id') id: string, @Body() updateBillDto: UpdateBillDto) {
+    return await this.billService.update(+id, updateBillDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.billService.remove(+id);
+  @UseGuards(JwtAuthGuard)
+  async remove(@Param('id') id: string) {
+    return await this.billService.remove(+id);
   }
 }
