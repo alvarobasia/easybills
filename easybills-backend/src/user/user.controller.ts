@@ -6,6 +6,7 @@ import {
   Request,
   Param,
   Delete,
+  HttpCode,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -28,6 +29,7 @@ export class UserController {
 
   @UseGuards(AuthGuard('local'))
   @Post('login')
+  @HttpCode(200)
   async login(@Request() req) {
     const token = await this.authService.login(req.user);
     return { ...req.user, ...token };
