@@ -8,13 +8,29 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { BsFillPersonFill, BsFillLockFill } from "react-icons/bs";
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styles from "./styles.module.scss";
 import { NextPage } from "next";
-import Footer from '../../components/Footer';
-import Link from 'next/link'
+import Footer from "../../components/Footer";
+import Link from "next/link";
+import { AuthContext } from "../../contexts/AuthContext";
+import { useRouter } from "next/router";
 
 const Home: NextPage = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { singIn, isAuthenticated } = useContext(AuthContext);
+  const router = useRouter();
+
+  function handleLogin() {
+    singIn(email, password);
+  }
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push("/");
+    }
+  }, [isAuthenticated]);
   return (
     <>
       <Text
@@ -35,7 +51,7 @@ const Home: NextPage = () => {
             fontSize: "64px",
             color: "red",
             fontWeight: "bold",
-            textShadow:"2px 5px 5px #ddd",
+            textShadow: "2px 5px 5px #ddd",
           }}
         >
           gastos
@@ -46,7 +62,7 @@ const Home: NextPage = () => {
             color: "#00BB2D",
             fontSize: "64px",
             fontWeight: "bold",
-            textShadow:"2px 5px 5px #ddd",
+            textShadow: "2px 5px 5px #ddd",
           }}
         >
           lucros
@@ -86,7 +102,12 @@ const Home: NextPage = () => {
                 pointerEvents="none"
                 children={<BsFillPersonFill color="#575757" />}
               />
-              <Input type="text" placeholder="Email" />
+              <Input
+                type="text"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </InputGroup>
           </Stack>
 
@@ -100,11 +121,17 @@ const Home: NextPage = () => {
                 pointerEvents="none"
                 children={<BsFillLockFill color="#575757" />}
               />
-              <Input type="password" placeholder="Senha" />
+              <Input
+                type="password"
+                placeholder="Senha"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </InputGroup>
           </Stack>
 
           <Button
+            onClick={handleLogin}
             fontFamily="Lexend Deca"
             width="100%"
             bg="#00BB2D"
@@ -123,7 +150,8 @@ const Home: NextPage = () => {
             fontSize="medium"
             marginTop="5px"
           >
-            Não possui uma conta? Se <Link href="/register">registre agora!</Link>
+            Não possui uma conta? Se{" "}
+            <Link href="/register">registre agora!</Link>
           </Text>
         </Container>
       </div>
