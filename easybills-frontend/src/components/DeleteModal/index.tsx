@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { IconButton } from "@chakra-ui/react";
 import { BsTrash2 } from "react-icons/bs";
 import {
@@ -7,20 +7,26 @@ import {
   ModalContent,
   ModalFooter,
   Button,
-  useDisclosure
+  useDisclosure,
+  ModalHeader
 } from '@chakra-ui/react';
-import { Bill } from './types';
+import { IProps } from './types';
+import { deleteBillsBillsService } from '../../services/deleteBill';
+import { getCookie } from '../../helpers/cookie';
 
-const DeleteModal: React.FC<Bill> = (bill: Bill) => {
+const DeleteModal: React.FC<IProps> = ({ bill }: IProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  function handleDelete(){
-    console.log("bill", bill);
+  async function handleDelete(){
+    try{
+      const token = getCookie('token');
+      console.log("bill", bill);
+      const response = await deleteBillsBillsService(token, bill._id);
+      console.log("response", response);
+    }catch(err: any){
+      console.log(err.message);
+    }
   }
-
-  useEffect(()=> {
-    handleDelete()
-  }, [bill]);
 
   return (
     <>
@@ -35,12 +41,14 @@ const DeleteModal: React.FC<Bill> = (bill: Bill) => {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <div>MODAL DE DELETAR</div>
+          <ModalHeader>Deseja deletar a fatura?</ModalHeader>
           <ModalFooter>
-            <Button colorScheme='blue' mr={3} onClick={onClose}>
-              Close
+            <Button variant='ghost' mr={3} onClick={onClose}>
+              Cancelar
             </Button>
-            <Button variant='ghost'>Secondary Action</Button>
+            <Button colorScheme='red' onClick={handleDelete}>
+              Deletar
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

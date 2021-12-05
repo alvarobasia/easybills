@@ -10,10 +10,6 @@ import TableList from '../TableList';
 
 const TableBills: React.FC<TableProps> = ({ bills }: TableProps) => {
 
-  useEffect(() => {
-    console.log("Bills", bills);
-  }, [bills])
-
   return (
     <>
       <Table fontFamily="Lexend Deca" variant="unstyled" colorScheme="teal">

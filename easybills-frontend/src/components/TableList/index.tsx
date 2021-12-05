@@ -32,7 +32,7 @@ const TableList: React.FC<TableProps> = ({ bills }: TableProps) => {
             <Td>{bill.tags.join(", ")}</Td>
             <Td isNumeric>{bill.amount}</Td>
             <Td>
-              <DeleteModal />
+              <DeleteModal bill={bill} />
             </Td>
             <Td>
               <IconButton aria-label="apagar" variant="ghost">

@@ -7,3 +7,7 @@ export interface Bill {
   description: string;
   profit: boolean;
 }
+
+export interface IProps{
+  bill: Bill
+}
