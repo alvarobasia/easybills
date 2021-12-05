@@ -46,7 +46,7 @@ const MainCards: React.FC<MainCardsProps> = ({
           padding="15px"
           fontFamily="Lexend Deca"
         >
-          R${value}
+          R${value.toFixed(2)}
         </Text>
       </Box>
     </Box>

@@ -106,6 +106,7 @@ const Home: NextPage = () => {
                 type="text"
                 placeholder="Email"
                 value={email}
+                color="#000"
                 onChange={(e) => setEmail(e.target.value)}
               />
             </InputGroup>
@@ -124,6 +125,7 @@ const Home: NextPage = () => {
               <Input
                 type="password"
                 placeholder="Senha"
+                color="#000"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />

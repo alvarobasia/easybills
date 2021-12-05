@@ -8,17 +8,38 @@ import Header from '../components/Header';
 import { getAllBillsService } from "../services/getAllBills";
 import TableBills from "../components/Table";
 import { Bill } from "../components/Table/types";
+import { getCookie } from '../helpers/cookie';
+import AddBillModal from "../components/AddBillModal";
 
 const Home: NextPage = () => {
   const colorText = useColorModeValue("#505050", "#ffffff");
   const [bills, setBills] = useState<Bill[]>([]);
+  const [out, setOut] = useState<number>(0);
+  const [entry, setEntry] = useState<number>(0);
+
+  async function handleLoad(){
+    const token = getCookie('token');
+    const response = await getAllBillsService(token);
+    setBills(response.data);
+    getMinMax(response.data);
+  }
+
+  function getMinMax(bills: Bill[]){
+    let pos = 0;
+    let neg = 0;
+    for(let i=0; i<bills.length; i++){
+      if(bills[i].amount >= 0){
+        pos += bills[i].amount;
+      }else{
+        neg += bills[i].amount;
+      }
+    }
+    setOut(neg);
+    setEntry(pos);
+  }
 
   useEffect(() => {
-    getAllBillsService(
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNzc0BzbWFpbC5jb20iLCJzdWIiOiI2MTlhMzlkOGQ5OWNkNjA2OWQzMzQzMDYiLCJuYW1lIjoiYWx2YXJvIiwiaWF0IjoxNjM3NTAxNzUxLCJleHAiOjE2NDAwOTM3NTF9.u6zPxw-zbfN5VNJ5r2ZfRQioUPm7MBnfjgyH6SnVo8I"
-    ).then((e) => {
-      setBills(e.data);
-    });
+    handleLoad();
   }, []);
   
   return (
@@ -31,7 +52,7 @@ const Home: NextPage = () => {
           icon={
             <AiOutlineCheckCircle size={36} style={{ marginBottom: "10px" }} />
           }
-          value={444}
+          value={entry}
         />
         <MainCards
           title={"Saídas"}
@@ -39,7 +60,7 @@ const Home: NextPage = () => {
           icon={
             <AiOutlineCheckCircle size={36} style={{ marginBottom: "10px" }} />
           }
-          value={444}
+          value={out}
         />
         <MainCards
           title={"Total"}
@@ -47,8 +68,18 @@ const Home: NextPage = () => {
           icon={
             <AiOutlineCheckCircle size={36} style={{ marginBottom: "10px" }} />
           }
-          value={444}
+          value={entry - out}
         />
+      </Box>
+      <Box
+        w="95%"
+        margin="0 auto"
+        borderRadius={8}
+        justifyContent="flex-end"
+        alignItems="flex-end"
+        display="flex"
+      >
+        <AddBillModal />
       </Box>
       <Box
         w="95%"

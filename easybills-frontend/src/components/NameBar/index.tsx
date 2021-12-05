@@ -20,7 +20,7 @@ const NameBar: React.FC = () => {
   return (
     <Box display="flex" alignItems="center" style={{ gap: "15px" }}>
       <Text as="p" color={colorText} fontSize="2xl">
-        Olá, alvaro {user?.username}
+        Olá, {user?.username}
       </Text>
       <Stack
         as="div"

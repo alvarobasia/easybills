@@ -1,17 +1,19 @@
-import React from 'react';
+import React, { InputHTMLAttributes } from 'react';
 
 import { Container, Field } from './styles';
 
-interface IProps{
+interface IProps extends InputHTMLAttributes<HTMLInputElement>{
   icon?: any
-  placeholder?: string
 }
 
-const Input: React.FC<IProps> = ({ icon, placeholder }: IProps) => {
+const Input: React.FC<IProps> = (props: IProps) => {
+  const { icon } = props;
   return (
     <Container>
       {icon}
-      <Field placeholder={placeholder} />
+      <Field 
+        {...props}
+      />
     </Container>
   );
 }
