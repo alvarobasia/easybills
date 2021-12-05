@@ -20,7 +20,13 @@ const MainCards: React.FC<MainCardsProps> = ({
   const colorText = useColorModeValue("#505050", "#ffffff");
   const cardColor = useColorModeValue(colors[0], colors[1]);
   return (
-    <Box w="30vw" height="180px" bgColor={cardColor} borderRadius={8}>
+    <Box 
+      w="auto" 
+      minWidth="300px"
+      height="160px" 
+      bgColor={cardColor} 
+      borderRadius={8}
+    >
       <Stack
         spacing={4}
         display="flex"
@@ -42,9 +48,10 @@ const MainCards: React.FC<MainCardsProps> = ({
         {" "}
         <Text
           color={colorText}
-          fontSize="5xl"
+          fontSize="2.5rem"
           padding="15px"
           fontFamily="Lexend Deca"
+          whiteSpace="nowrap"
         >
           R${value.toFixed(2)}
         </Text>
