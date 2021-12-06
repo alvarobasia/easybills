@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { levelDatabase } from 'src/main';
 import { UserService } from 'src/user/user.service';
 import { comparePassword } from 'src/utils/compare-password';
+import { getLevel } from 'src/utils/get-level';
 
 @Injectable()
 export class AuthService {
@@ -11,7 +13,9 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
-    const user = await this.userService.findOne(email);
+    let user = await this.userService.findOne(email);
+    user = await getLevel(email);
+
     if (user && (await comparePassword(password, user.password))) {
       return {
         id: (user as any)._id.toString(),

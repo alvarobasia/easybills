@@ -1,6 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { use } from 'passport';
+import { levelDatabase } from 'src/main';
+import { getLevel } from 'src/utils/get-level';
 import { hashPassword } from 'src/utils/hash-password';
 import { User, UserDocument } from './entities/user.entity';
 
@@ -57,20 +60,41 @@ export class UserService {
       password: hashedPassword,
     });
     const savedUser = await userCreated.save();
+
+    //level
+
+    levelDatabase.put(`${savedUser.email}`, {
+      _id: savedUser._id,
+      name: savedUser.name,
+      email: savedUser.email,
+      password: hashedPassword,
+    });
+
     return { id: savedUser._id, name: savedUser.name, email: savedUser.email };
   }
 
   async findOne(email: string): Promise<User | undefined> {
-    const user = await this.userModel
+    let user = await this.userModel
       .findOne({
         email,
       })
       .exec();
+
+    //level
+
+    user = await getLevel(email);
+
     return user || undefined;
   }
 
   async delete(id: string): Promise<User> {
-    return await this.userModel.findOneAndDelete({ _id: id });
+    const user = await this.userModel.findOneAndDelete({ _id: id });
+
+    //level
+
+    levelDatabase.del(`${user.email}`);
+
+    return user;
   }
 
   async updateUser(
@@ -92,6 +116,19 @@ export class UserService {
           { new: true },
         )
         .exec();
+
+      //level
+      const oldUser = await getLevel(email);
+
+      const password = oldUser.password;
+      levelDatabase.del(`${oldUser.email}`);
+
+      levelDatabase.put(`${user.email}`, {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        password,
+      });
     } catch {
       throw new HttpException(
         {
