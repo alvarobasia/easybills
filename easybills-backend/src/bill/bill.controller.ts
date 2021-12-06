@@ -38,6 +38,6 @@ export class BillController {
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   async remove(@Param('id') id: string) {
-    return await this.billService.remove(+id);
+    return await this.billService.remove(id);
   }
 }
