@@ -96,7 +96,7 @@ export class BillService {
     return bill;
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     return await this.billModel.findOneAndDelete({ _id: id });
   }
 }
