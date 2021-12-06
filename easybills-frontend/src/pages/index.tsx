@@ -1,36 +1,40 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, useColorModeValue } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 
 import MainCards from "../components/MainCards";
-import Header from '../components/Header';
+import Header from "../components/Header";
 import { getAllBillsService } from "../services/getAllBills";
 import TableBills from "../components/Table";
 import { Bill } from "../components/Table/types";
-import { getCookie } from '../helpers/cookie';
+import { getCookie } from "../helpers/cookie";
 import AddBillModal from "../components/AddBillModal";
+import { BillsContext } from "../contexts/BillsContext";
 
 const Home: NextPage = () => {
   const colorText = useColorModeValue("#505050", "#ffffff");
-  const [bills, setBills] = useState<Bill[]>([]);
+  const { bills } = useContext(BillsContext);
   const [out, setOut] = useState<number>(0);
   const [entry, setEntry] = useState<number>(0);
 
-  async function handleLoad(){
-    const token = getCookie('token');
+  async function handleLoad() {
+    const token = getCookie("token");
     const response = await getAllBillsService(token);
-    setBills(response.data);
     getMinMax(response.data);
   }
 
-  function getMinMax(bills: Bill[]){
+  useEffect(() => {
+    if (bills) getMinMax(bills);
+  }, [bills]);
+
+  function getMinMax(bills: Bill[]) {
     let pos = 0;
     let neg = 0;
-    for(let i=0; i<bills.length; i++){
-      if(bills[i].amount >= 0){
+    for (let i = 0; i < bills.length; i++) {
+      if (bills[i].amount >= 0) {
         pos += bills[i].amount;
-      }else{
+      } else {
         neg += bills[i].amount;
       }
     }
@@ -41,7 +45,9 @@ const Home: NextPage = () => {
   useEffect(() => {
     handleLoad();
   }, []);
-  
+
+  if (!bills) return <div>s</div>;
+
   return (
     <>
       <Header />
@@ -68,7 +74,7 @@ const Home: NextPage = () => {
           icon={
             <AiOutlineCheckCircle size={36} style={{ marginBottom: "10px" }} />
           }
-          value={entry - out}
+          value={out + entry}
         />
       </Box>
       <Box
@@ -90,7 +96,7 @@ const Home: NextPage = () => {
         maxHeight="50vh"
         overflowY="scroll"
       >
-        <TableBills bills={bills} />
+        {bills && <TableBills bills={bills} />}
       </Box>
     </>
   );
