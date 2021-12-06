@@ -1,20 +1,18 @@
 import React from 'react';
-import { FiEdit3 } from "react-icons/fi";
 import {
   Tbody,
   Tr,
   Td,
-  IconButton,
   useColorMode
 } from "@chakra-ui/react";
 import { Bill, TableProps } from '../Table/types';
 import DeleteModal from '../DeleteModal';
+import EditBillModal from '../EditBillModal';
 
 const TableList: React.FC<TableProps> = ({ bills }: TableProps) => {
   const profitColors = ["#81f376", "#3e941c"];
   const lossColors = ["#e26060", "#c53131"];
   const { colorMode } = useColorMode();
-  const [openModalDelete, setOpenModalDelete] = React.useState(false);
 
   return (
     <Tbody>
@@ -35,9 +33,7 @@ const TableList: React.FC<TableProps> = ({ bills }: TableProps) => {
               <DeleteModal bill={bill} />
             </Td>
             <Td>
-              <IconButton aria-label="apagar" variant="ghost">
-                <FiEdit3 />
-              </IconButton>
+              <EditBillModal bill={bill}/>
             </Td>
           </Tr>
         );

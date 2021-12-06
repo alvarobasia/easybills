@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { IconButton } from "@chakra-ui/react";
-import { AiOutlinePlusCircle } from "react-icons/ai";
+import { FiEdit3 } from "react-icons/fi";
 import {
   Modal,
   ModalOverlay,
@@ -10,19 +10,21 @@ import {
   useDisclosure,
   ModalHeader
 } from '@chakra-ui/react';
-import { Body } from './styles';
-import Item from './Item';
-import TagItem from './TagItem';
-import { postBill } from '../../services/postBill';
-import { getCookie } from '../../helpers/cookie';
 
-const AddBillModal: React.FC = () => {
+import { Body } from '../AddBillModal/styles';
+import Item from '../AddBillModal/Item';
+import TagItem from '../AddBillModal/TagItem';
+import { patchBillsBillsService } from '../../services/editBill';
+import { getCookie } from '../../helpers/cookie';
+import { IProps } from './types';
+
+const EditBillModal: React.FC<IProps> = ({ bill }: IProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [name, setName] = useState<string>('');
-  const [description, setDescription] = useState<string>('');
-  const [amount, setAmount] = useState<string>('');
+  const [name, setName] = useState<string>(bill.name);
+  const [description, setDescription] = useState<string>(bill.description);
+  const [amount, setAmount] = useState<string>(String(bill.amount));
   const [tag, setTag] = useState<string>('');
-  const [tags, setTags] = useState<string[]>([]);
+  const [tags, setTags] = useState<string[]>(bill.tags);
 
   useEffect(() => {
     if(tag[tag.length - 1] === ','){
@@ -44,17 +46,16 @@ const AddBillModal: React.FC = () => {
     setTag('');
   }
 
-  async function handleAddBill(){
+  async function handleEditBill(){
     try{
       const token = getCookie('token');
-      await postBill(token, {
+      await patchBillsBillsService(token, bill._id, {
         amount: Number(amount),
-        date: new Date(),
         description,
         name,
         tags,
       });
-      window.alert('Fatura cadastrada com sucesso!');
+      window.alert('Fatura editada com sucesso!');
       onClose();
     }catch(err: any){
       console.log(err.message);
@@ -68,13 +69,13 @@ const AddBillModal: React.FC = () => {
         aria-label="apagar"
         variant="ghost"
       >
-        <AiOutlinePlusCircle />
+        <FiEdit3 />
       </IconButton>
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Adicionar Fatura</ModalHeader>
+          <ModalHeader>Editar Fatura</ModalHeader>
           <Body>
             <Item
               title='Nome'
@@ -111,8 +112,8 @@ const AddBillModal: React.FC = () => {
           </Body>
           <ModalFooter>
             <Button variant='ghost' onClick={onClose}>Cancelar</Button>
-            <Button colorScheme='blue' mr={3} onClick={handleAddBill}>
-              Adicionar
+            <Button colorScheme='blue' mr={3} onClick={handleEditBill}>
+              Editar
             </Button>
           </ModalFooter>
         </ModalContent>
@@ -121,4 +122,4 @@ const AddBillModal: React.FC = () => {
   )
 }
 
-export default AddBillModal;
+export default EditBillModal;

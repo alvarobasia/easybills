@@ -45,7 +45,16 @@ const Home: NextPage = () => {
   return (
     <>
       <Header />
-      <Box w="90%" margin="15px auto" display="flex" style={{ gap: "15px" }}>
+      <Box 
+        w="100%" 
+        margin="15px auto" 
+        padding="16px"
+        display="flex" 
+        flexDirection="row"
+        justifyContent="center"
+        flexWrap="wrap"
+        style={{ gap: "15px" }}
+      >
         <MainCards
           title={"Entradas"}
           colors={["#81f376", "#3e941c"]}

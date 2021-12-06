@@ -62,7 +62,7 @@ export class BillService {
   // findOne(id: number) {}
 
   async update(
-    id: number,
+    id: string,
     { amount, date, description, name, tags }: UpdateBillDto,
   ) {
     let bill = undefined;
@@ -96,7 +96,7 @@ export class BillService {
     return bill;
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     return await this.billModel.findOneAndDelete({ _id: id });
   }
 }

@@ -1,3 +1,7 @@
+export interface IProps{
+  bill: Bill
+}
+
 export interface Bill {
   _id: string;
   date: string;
