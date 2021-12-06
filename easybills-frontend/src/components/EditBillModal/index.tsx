@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { IconButton } from "@chakra-ui/react";
 import { FiEdit3 } from "react-icons/fi";
 import {
@@ -10,6 +10,7 @@ import {
   useDisclosure,
   ModalHeader
 } from '@chakra-ui/react';
+import { useToast } from "@chakra-ui/react";
 
 import { Body } from '../AddBillModal/styles';
 import Item from '../AddBillModal/Item';
@@ -17,9 +18,12 @@ import TagItem from '../AddBillModal/TagItem';
 import { patchBillsBillsService } from '../../services/editBill';
 import { getCookie } from '../../helpers/cookie';
 import { IProps } from './types';
+import { BillsContext } from "../../contexts/BillsContext";
 
 const EditBillModal: React.FC<IProps> = ({ bill }: IProps) => {
+  const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { updateBills } = useContext(BillsContext);
   const [name, setName] = useState<string>(bill.name);
   const [description, setDescription] = useState<string>(bill.description);
   const [amount, setAmount] = useState<string>(String(bill.amount));
@@ -55,7 +59,13 @@ const EditBillModal: React.FC<IProps> = ({ bill }: IProps) => {
         name,
         tags,
       });
-      window.alert('Fatura editada com sucesso!');
+      toast({
+        title: "Fatura editada com sucesso!",
+        status: "success",
+        isClosable: true,
+        duration: 5000,
+      });
+      updateBills();
       onClose();
     }catch(err: any){
       console.log(err.message);

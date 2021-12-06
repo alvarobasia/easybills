@@ -18,12 +18,6 @@ const Home: NextPage = () => {
   const [out, setOut] = useState<number>(0);
   const [entry, setEntry] = useState<number>(0);
 
-  async function handleLoad() {
-    const token = getCookie("token");
-    const response = await getAllBillsService(token);
-    getMinMax(response.data);
-  }
-
   useEffect(() => {
     if (bills) getMinMax(bills);
   }, [bills]);
@@ -41,10 +35,6 @@ const Home: NextPage = () => {
     setOut(neg);
     setEntry(pos);
   }
-
-  useEffect(() => {
-    handleLoad();
-  }, []);
 
   if (!bills) return <div>s</div>;
 

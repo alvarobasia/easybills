@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { IconButton } from "@chakra-ui/react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
+import { useToast } from "@chakra-ui/react";
 import {
   Modal,
   ModalOverlay,
@@ -18,13 +19,15 @@ import { getCookie } from "../../helpers/cookie";
 import { BillsContext } from "../../contexts/BillsContext";
 
 const AddBillModal: React.FC = () => {
+  const toast = useToast();
+  const { updateBills } = useContext(BillsContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [amount, setAmount] = useState<string>("");
   const [tag, setTag] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
-  const { updateBills } = useContext(BillsContext);
+  
   useEffect(() => {
     if (tag[tag.length - 1] === ",") {
       addTag(tag.split(",")[0]);
@@ -55,7 +58,13 @@ const AddBillModal: React.FC = () => {
         name,
         tags,
       });
-      window.alert('Fatura cadastrada com sucesso!');
+      updateBills();
+      toast({
+        title: "Fatura cadastrada com sucesso!",
+        status: "success",
+        isClosable: true,
+        duration: 5000,
+      });
       onClose();
     }catch(err: any){
       console.log(err.message);
