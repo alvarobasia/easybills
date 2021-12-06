@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from "react";
 import { IconButton } from "@chakra-ui/react";
 import { BsTrash2 } from "react-icons/bs";
 import {
@@ -8,33 +8,30 @@ import {
   ModalFooter,
   Button,
   useDisclosure,
-  ModalHeader
-} from '@chakra-ui/react';
-import { IProps } from './types';
-import { deleteBillsBillsService } from '../../services/deleteBill';
-import { getCookie } from '../../helpers/cookie';
+  ModalHeader,
+} from "@chakra-ui/react";
+import { IProps } from "./types";
+import { deleteBillsBillsService } from "../../services/deleteBill";
+import { getCookie } from "../../helpers/cookie";
+import { BillsContext } from "../../contexts/BillsContext";
 
 const DeleteModal: React.FC<IProps> = ({ bill }: IProps) => {
-  const { isOpen, onOpen, onClose } = useDisclosure()
-
-  async function handleDelete(){
-    try{
-      const token = getCookie('token');
-      console.log("bill", bill);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { updateBills } = useContext(BillsContext);
+  async function handleDelete() {
+    try {
+      const token = getCookie("token");
       const response = await deleteBillsBillsService(token, bill._id);
-      console.log("response", response);
-    }catch(err: any){
+      updateBills();
+      onClose();
+    } catch (err: any) {
       console.log(err.message);
     }
   }
 
   return (
     <>
-      <IconButton
-        onClick={onOpen}
-        aria-label="apagar"
-        variant="ghost"
-      >
+      <IconButton onClick={onOpen} aria-label="apagar" variant="ghost">
         <BsTrash2 />
       </IconButton>
 
@@ -43,17 +40,17 @@ const DeleteModal: React.FC<IProps> = ({ bill }: IProps) => {
         <ModalContent>
           <ModalHeader>Deseja deletar a fatura?</ModalHeader>
           <ModalFooter>
-            <Button variant='ghost' mr={3} onClick={onClose}>
+            <Button variant="ghost" mr={3} onClick={onClose}>
               Cancelar
             </Button>
-            <Button colorScheme='red' onClick={handleDelete}>
+            <Button colorScheme="red" onClick={handleDelete}>
               Deletar
             </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
     </>
-  )
-}
+  );
+};
 
 export default DeleteModal;
