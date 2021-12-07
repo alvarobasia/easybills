@@ -62,7 +62,7 @@ export class BillService {
   // findOne(id: number) {}
 
   async update(
-    id: number,
+    id: string,
     { amount, date, description, name, tags }: UpdateBillDto,
   ) {
     let bill = undefined;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { IconButton } from "@chakra-ui/react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
+import { useToast } from "@chakra-ui/react";
 import {
   Modal,
   ModalOverlay,
@@ -18,13 +19,15 @@ import { getCookie } from "../../helpers/cookie";
 import { BillsContext } from "../../contexts/BillsContext";
 
 const AddBillModal: React.FC = () => {
+  const toast = useToast();
+  const { updateBills } = useContext(BillsContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [amount, setAmount] = useState<string>("");
   const [tag, setTag] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
-  const { updateBills } = useContext(BillsContext);
+  
   useEffect(() => {
     if (tag[tag.length - 1] === ",") {
       addTag(tag.split(",")[0]);
@@ -42,13 +45,13 @@ const AddBillModal: React.FC = () => {
     const array = tags;
     const newArray = array.filter((tag) => tag !== remove);
     setTags([...newArray]);
-    setTag("");
+    setTag('');
   }
 
-  async function handleAddBill() {
-    try {
-      const token = getCookie("token");
-      const response = await postBill(token, {
+  async function handleAddBill(){
+    try{
+      const token = getCookie('token');
+      await postBill(token, {
         amount: Number(amount),
         date: new Date(),
         description,
@@ -56,8 +59,14 @@ const AddBillModal: React.FC = () => {
         tags,
       });
       updateBills();
+      toast({
+        title: "Fatura cadastrada com sucesso!",
+        status: "success",
+        isClosable: true,
+        duration: 5000,
+      });
       onClose();
-    } catch (err: any) {
+    }catch(err: any){
       console.log(err.message);
     }
   }

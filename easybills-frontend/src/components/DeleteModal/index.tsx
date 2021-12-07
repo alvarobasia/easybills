@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { IconButton } from "@chakra-ui/react";
 import { BsTrash2 } from "react-icons/bs";
+import { useToast } from "@chakra-ui/react";
 import {
   Modal,
   ModalOverlay,
@@ -16,12 +17,20 @@ import { getCookie } from "../../helpers/cookie";
 import { BillsContext } from "../../contexts/BillsContext";
 
 const DeleteModal: React.FC<IProps> = ({ bill }: IProps) => {
+  const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { updateBills } = useContext(BillsContext);
+
   async function handleDelete() {
     try {
       const token = getCookie("token");
-      const response = await deleteBillsBillsService(token, bill._id);
+      await deleteBillsBillsService(token, bill._id);
+      toast({
+        title: "Fatura deletada com sucesso!",
+        status: "success",
+        isClosable: true,
+        duration: 5000,
+      });
       updateBills();
       onClose();
     } catch (err: any) {

@@ -18,12 +18,6 @@ const Home: NextPage = () => {
   const [out, setOut] = useState<number>(0);
   const [entry, setEntry] = useState<number>(0);
 
-  async function handleLoad() {
-    const token = getCookie("token");
-    const response = await getAllBillsService(token);
-    getMinMax(response.data);
-  }
-
   useEffect(() => {
     if (bills) getMinMax(bills);
   }, [bills]);
@@ -42,16 +36,21 @@ const Home: NextPage = () => {
     setEntry(pos);
   }
 
-  useEffect(() => {
-    handleLoad();
-  }, []);
-
   if (!bills) return <div>s</div>;
 
   return (
     <>
       <Header />
-      <Box w="90%" margin="15px auto" display="flex" style={{ gap: "15px" }}>
+      <Box 
+        w="100%" 
+        margin="15px auto" 
+        padding="16px"
+        display="flex" 
+        flexDirection="row"
+        justifyContent="center"
+        flexWrap="wrap"
+        style={{ gap: "15px" }}
+      >
         <MainCards
           title={"Entradas"}
           colors={["#81f376", "#3e941c"]}

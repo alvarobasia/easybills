@@ -32,7 +32,7 @@ export class BillController {
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
   async update(@Param('id') id: string, @Body() updateBillDto: UpdateBillDto) {
-    return await this.billService.update(+id, updateBillDto);
+    return await this.billService.update(id, updateBillDto);
   }
 
   @Delete(':id')
