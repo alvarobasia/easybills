@@ -88,9 +88,15 @@ export class UserService {
   }
 
   async delete(id: string): Promise<User> {
-    const user = await this.userModel.findOneAndDelete({ _id: id });
+    let user = await this.userModel.findOneAndDelete({ _id: id });
 
     //level
+
+    for await (const [, value] of levelDatabase.iterator() as any) {
+      if (value?._id && value._id === id) {
+        user = value;
+      }
+    }
 
     levelDatabase.del(`${user.email}`);
 

@@ -12,6 +12,8 @@ import { Bill, BillDocument } from './entities/bill.entity';
 import { Request } from 'express';
 import { REQUEST } from '@nestjs/core';
 import { UpdateBillDto } from './dto/update-bill.dto';
+import { levelDatabase } from 'src/main';
+import { getLevel } from 'src/utils/get-level';
 
 @Injectable({ scope: Scope.REQUEST })
 export class BillService {
@@ -52,10 +54,24 @@ export class BillService {
     const bill = new this.billModel(createBillDto);
     bill.userId = (this.request.user as any).id;
     bill.profit = createBillDto.amount > 0;
+
+    try {
+      const billsOnLevel = await levelDatabase.get(`bills`);
+      levelDatabase.put(`bills`, [...billsOnLevel, bill]);
+    } catch (e) {
+      levelDatabase.put(`bills`, [bill]);
+    }
+
     return await bill.save();
   }
 
-  findAllByUser() {
+  async findAllByUser() {
+    const bills = await getLevel('bills');
+
+    const billsByUser = bills.filter(
+      (bill) => (bill.userId = (this.request.user as any).id),
+    );
+
     return this.billModel.find({ userId: (this.request.user as any).id });
   }
 
@@ -93,10 +109,23 @@ export class BillService {
         HttpStatus.NOT_FOUND,
       );
     }
+
+    const bills = await getLevel('bills');
+
+    const otherBills = bills.filter((bill) => bill._id !== id);
+
+    levelDatabase.put('bills', [...otherBills, bill]);
+
     return bill;
   }
 
   async remove(id: string) {
+    const bills = await getLevel('bills');
+
+    const otherBills = bills.filter((bill) => bill._id !== id);
+
+    levelDatabase.put('bills', [...otherBills]);
+
     return await this.billModel.findOneAndDelete({ _id: id });
   }
 }
